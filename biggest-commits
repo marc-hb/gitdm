@@ -1,0 +1,44 @@
+#!/usr/bin/python
+#
+# List the biggest commits from an author over a given rev range
+#
+# biggest-commits <repo> <author> <range>
+#
+import subprocess, sys, re, os
+
+if len(sys.argv) != 4:
+    print('Usage: biggest-commits <repo> <author> <range>')
+    sys.exit(1)
+
+os.chdir(sys.argv[1])
+commits = { }
+ins = re.compile(r'(\d+) insertion')
+dele = re.compile(r'(\d+) deletion')
+
+cmd = [ '/usr/bin/git', 'log', '--pretty=oneline', '--shortstat',
+        '-i', '--no-merges', f'--author={sys.argv[2]}', sys.argv[3] ]
+print(' '.join(cmd))
+total = 0
+        
+with subprocess.Popen(cmd, stdout = subprocess.PIPE) as log:
+    line = log.stdout.readline().decode('utf8')
+    while line:
+        commit, title = line.strip().split(' ', 1)
+        line = log.stdout.readline().decode('utf8')
+        m = ins.search(line)
+        if m:
+            lines = int(m.group(1))
+        else:
+            lines = 0
+        m = dele.search(line)
+        if m:
+            lines = max(lines, int(m.group(1)))
+        commits[commit] = (lines, title)
+        total += 1
+        line = log.stdout.readline().decode('utf8')
+
+print(f'{total} commits.')
+sc = sorted(commits.keys(), key = lambda e: -commits[e][0])
+for c in sc[:10]:
+    lines, title = commits[c]
+    print(f'{lines:6d} {c[:12]} {title}')
