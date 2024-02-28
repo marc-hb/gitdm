@@ -190,7 +190,7 @@ class patch:
         self.removed += removed
         self.files.append(file)
 
-tag = re.compile('\(tag: (v[.\d]+)\)')
+tag = re.compile(r'\(tag: (v[.\d]+)\)')
 def grabpatch(input):
     #
     # If it's not a patch something is screwy.
