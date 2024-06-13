@@ -278,8 +278,11 @@ def SigStats(tree):
 def GV_out(file):
     graph = graphviz.Digraph('mainline', filename = file, format = 'svg')
     graph.body.extend(['label="Patch flow into the mainline"',
-                       'concentrate=true',
-                       'rankdir=LR' ])
+                       ' concentrate=true',
+                       ' rankdir=LR' ])
+    if args.twopi:
+        graph.body.extend([' layout = twopi; graph [ranksep=10]',
+                           ' root=mainline'])
     graph.attr('node', fontsize="20", color="blue", penwidth='4',
                shape='ellipse')
     graph.node('mainline')
@@ -359,6 +362,8 @@ def setup_args():
                    required = False, default = 200, type = int)
     p.add_argument('-s', '--signed', help = 'Display signed trees',
                    action='store_true', default = False)
+    p.add_argument('-T', '--twopi', help = 'Do a twopi plot',
+                   action = 'store_true', default = False)
     return p
 
 
