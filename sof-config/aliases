@@ -1,7 +1,40 @@
+# This file has TWO purposes:
+#
+# 1. Deduplication (obviously)
+# 2. Employer assignment
+#
+# The address in the right column may or may not be valid. The only
+# thing that matters is the domain name for employer matching purposes.
 
-# Generated with:
-# git log --format=tformat:%ae | sort -u |
-#    awk  '/linux.intel.com/ { printf("%s\t%s\n", $1, gensub("@linux.intel.com", "@intel.com", 1, $1)) }'
+87635673+balakishorepati@users.noreply.github.com	balakishore.pati@amd.com
+
+adrianx.warecki@intel.com	adrian.warecki@intel.com
+bard.liao@intel.com	yung-chuan.liao@intel.com
+danielcp@gmail.com	daniel.leung@intel.com
+lgirdwood@gmail.com	liam.r.girdwood@intel.com
+liam.r.girdwood.@intel.com	liam.r.girdwood@intel.com
+marc.herbert@gmail.com	marc.herbert@intel.com
+xiaoyuan.song@intel.com	andrula.song@intel.com
+
+40232714+tlauda@users.noreply.github.com	tomasz.lauda@intel.com
+39951716+lbetlej@users.noreply.github.com	lech.betlej@intel.com
+96577572+bkolodzi@users.noreply.github.com	bartosz.kolodziej@intel.com
+
+benzh@chromium.org	benzh@google.com
+cujomalainey@chromium.org	cujomalainey@google.com
+curtis@malainey.com	cujomalainey@google.com
+dgreid@chromium.org	notsure_dgreid@google.com
+eddyhsu@chromium.org	notsure_eddyhsu@google.com
+johnylin@googele.com	johnylin@google.com
+peah@chromium.org	notsure_per.ahgren@google.com
+# Fuzzing GSoC
+ymdatta.work@gmail.com  unknown_ymdatta@google.com
+
+daniel.baluta@gmail.com	daniel.baluta@nxp.com
+
+# "@linux.intel.com map" (re-)generated with this command:
+#   git log --format=tformat:%ae | sort -u |
+#      awk  '/linux.intel.com/ { printf("%s\t%s\n", $1, gensub("@linux.intel.com", "@intel.com", 1, $1)) }'
 
 # If this file is correct then no developer will be listed twice.
 adrian.bonislawski@linux.intel.com	adrian.bonislawski@intel.com
