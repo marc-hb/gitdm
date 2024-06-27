@@ -1,3 +1,20 @@
+
+# Most of the SOF employer matching work is done in GroupMap files, NOT
+# here.
+
+# To list who is unknown, simply comment out this line and re-run.
+intel.com	Intel unknown
+
+maximintegrated.com Maxims
+mediatek.com	MediaTek
+nxp.com	NXP
+intelli-go.com	Intelligo
+realtek.com	Realtek
+waves.com	Waves
+xperi.com	Xperi
+
+# Original, sample-config/domain-map list below:
+
 #
 # Here is a set of mappings of domain names onto employer names.
 #
@@ -115,7 +132,6 @@ indt.org.br	INdT
 indt.org	INdT
 inl.fr	INL
 inria.fr	INRIA
-intel.com	Intel
 intellitree.com	IntelliTree Solutions
 intra2net.com	Intra2net AG
 iram.es	IRAM
