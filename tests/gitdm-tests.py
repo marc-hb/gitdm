@@ -105,7 +105,7 @@ class GitdmTests(unittest.TestCase):
     def runGitdm(self, arguments):
         git_log_process = subprocess.Popen (["git", "--git-dir", self.git_dir, "log", "-p", "-M"],
                                             stdout=subprocess.PIPE)
-        gitdm_process = subprocess.Popen (["./gitdm"] + arguments,
+        gitdm_process = subprocess.Popen (["./gitdm.py"] + arguments,
                                           stdin=git_log_process.stdout)
         gitdm_process.communicate ()
 
