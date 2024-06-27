@@ -550,47 +550,58 @@ if DumpDB:
     database.DumpDB()
 database.MixVirtuals()
 
-#
-# Say something
-#
-hlist = database.AllHackers()
-elist = database.AllEmployers()
-ndev = nempl = 0
-for h in hlist:
-    if len(h.patches) > 0:
-        ndev += 1
-for e in elist:
-    if e.count > 0:
-        nempl += 1
-reports.Write('Processed %d csets from %d developers\n' % (CSCount,
-                                                            ndev))
-reports.Write('%d employers found\n' % (nempl))
-reports.Write('A total of %d lines added, %d removed (delta %d)\n' %
-              (TotalAdded, TotalRemoved, TotalAdded - TotalRemoved))
-if TotalChanged == 0:
-    TotalChanged = 1 # HACK to avoid div by zero
-if DateStats:
-    PrintDateStats()
+def PrintSummary(database):
+    """Print a brief summary of how much data was collected."""
+    hlist = database.AllHackers()
+    elist = database.AllEmployers()
+    ndev = nempl = 0
+    for h in hlist:
+        if len(h.patches) > 0:
+            ndev += 1
+    for e in elist:
+        if e.count > 0:
+            nempl += 1
+    reports.Write('Processed %d csets from %d developers\n' % (CSCount,
+                                                               ndev))
+    reports.Write('%d employers found\n' % (nempl))
+    reports.Write('A total of %d lines added, %d removed (delta %d)\n' %
+                  (TotalAdded, TotalRemoved, TotalAdded - TotalRemoved))
 
-if HackersCSV:
-    csvdump.OutputHackersCSV (HackersCSV, hlist);
-    HackersCSV.close ()
+def PrintReports(hlist, elist):
+    global TotalChanged, TotalAdded, TotalRemove
 
-if CSVPrefix:
-    csvdump.save_csv(CSVPrefix)
+    # HACK to avoid div by zero
+    total_changed = TotalChanged if TotalChanged != 0 else 1
 
-if CSVFile:
-    csvdump.OutputCSV(CSVFile)
-    CSVFile.close()
+    if DateStats:
+        PrintDateStats()
 
-if DevReports:
-    reports.DevReports(hlist, TotalChanged, CSCount, TotalRemoved)
-if ReportUnknowns:
-    reports.ReportUnknowns(hlist, CSCount)
-reports.EmplReports(elist, TotalChanged, CSCount)
+    if HackersCSV:
+        csvdump.OutputHackersCSV (HackersCSV, hlist);
+        HackersCSV.close ()
 
-if ReportByFileType and Numstat:
-    reports.ReportByFileType(hlist)
+    if CSVPrefix:
+        csvdump.save_csv(CSVPrefix)
 
-if FileReport:
-    reports.FileAccessReport(FileReport, FileAccesses, CSCount)
+    if CSVFile:
+        csvdump.OutputCSV(CSVFile)
+        CSVFile.close()
+
+    if DevReports:
+        reports.DevReports(hlist, total_changed, CSCount, TotalRemoved)
+    if ReportUnknowns:
+        reports.ReportUnknowns(hlist, CSCount)
+    reports.EmplReports(elist, total_changed, CSCount)
+
+    if ReportByFileType and Numstat:
+        reports.ReportByFileType(hlist)
+
+    if FileReport:
+        reports.FileAccessReport(FileReport, FileAccesses, CSCount)
+
+if __name__ == "__main__":
+    PrintSummary(database)
+
+    hlist = database.AllHackers()
+    elist = database.AllEmployers()
+    PrintReports(hlist, elist)
