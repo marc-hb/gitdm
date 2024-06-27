@@ -1,0 +1,42 @@
+
+# Generated with:
+# git log --format=tformat:%ae | sort -u |
+#    awk  '/linux.intel.com/ { printf("%s\t%s\n", $1, gensub("@linux.intel.com", "@intel.com", 1, $1)) }'
+
+# If this file is correct then no developer will be listed twice.
+adrian.bonislawski@linux.intel.com	adrian.bonislawski@intel.com
+arturx.kloniecki@linux.intel.com	arturx.kloniecki@intel.com
+bartoszx.kokoszko@linux.intel.com	bartoszx.kokoszko@intel.com
+chao.song@linux.intel.com	chao.song@intel.com
+danielx.bogdzia@linux.intel.com	danielx.bogdzia@intel.com
+fred.oh@linux.intel.com	fred.oh@intel.com
+guennadi.liakhovetski@linux.intel.com	guennadi.liakhovetski@intel.com
+jakub.dabek@linux.intel.com	jakub.dabek@intel.com
+janusz.jankowski@linux.intel.com	janusz.jankowski@intel.com
+jaska.uimonen@linux.intel.com	jaska.uimonen@intel.com
+jyri.sarha@linux.intel.com	jyri.sarha@intel.com
+kai.vehmanen@linux.intel.com	kai.vehmanen@intel.com
+kamil.kulesza@linux.intel.com	kamil.kulesza@intel.com
+karolx.trzcinski@linux.intel.com	karolx.trzcinski@intel.com
+keqiao.zhang@linux.intel.com	keqiao.zhang@intel.com
+lech.betlej@linux.intel.com	lech.betlej@intel.com
+liam.r.girdwood@linux.intel.com	liam.r.girdwood@intel.com
+libin.yang@linux.intel.com	libin.yang@intel.com
+marcin.maka@linux.intel.com	marcin.maka@intel.com
+marcin.rajwa@linux.intel.com	marcin.rajwa@intel.com
+marekx.lucki@linux.intel.com	marekx.lucki@intel.com
+mengdong.lin@linux.intel.com	mengdong.lin@intel.com
+michalx.wierzbicki@linux.intel.com	michalx.wierzbicki@intel.com
+peter.ujfalusi@linux.intel.com	peter.ujfalusi@intel.com
+pierre-louis.bossart@linux.intel.com	pierre-louis.bossart@intel.com
+rander.wang@linux.intel.com	rander.wang@intel.com
+ranjani.sridharan@linux.intel.com	ranjani.sridharan@intel.com
+seppo.ingalsuo@linux.intel.com	seppo.ingalsuo@intel.com
+slawomir.blauciak@linux.intel.com	slawomir.blauciak@intel.com
+tomasz.lauda@linux.intel.com	tomasz.lauda@intel.com
+xiuli.pan@linux.intel.com	xiuli.pan@intel.com
+yang.jie@linux.intel.com	yang.jie@intel.com
+yan.wang@linux.intel.com	yan.wang@intel.com
+yingjiang.zhu@linux.intel.com	yingjiang.zhu@intel.com
+yung-chuan.liao@linux.intel.com	yung-chuan.liao@intel.com
+zhigang.wu@linux.intel.com	zhigang.wu@intel.com
