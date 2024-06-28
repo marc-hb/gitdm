@@ -171,6 +171,10 @@ FileTypeMap file
 	'code' (the filename instead of '\.sh$').  The first element in order
 	has precedence over the next ones.
 
+HACKING
+	./tests/gitdm-tests.py
+
+	This must be run in the top-level directory.
 
 OTHER TOOLS
 
