@@ -35,6 +35,7 @@ class Hacker:
         HackersByEmail[email] = self
 
     def emailemployer(self, email, date):
+        email = NormalizeEmail(email)
         for i in range(0, len(self.email)):
             if (email is None) or (self.email[i] == email):
                 for edate, empl in self.employer[i]:
