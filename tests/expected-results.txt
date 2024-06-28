@@ -10,8 +10,8 @@ Punk Rocker                  1 (10.0%)
 
 Developers with the most changed lines
 Line Remover                14 (34.1%)
+Martin Nordholts            13 (31.7%)
 Random Joe                  13 (31.7%)
-Martin Nordholts            10 (24.4%)
 Punk Rocker                  1 (2.4%)
 
 Developers with the most lines removed
