@@ -48,7 +48,7 @@ class GitdmTests(unittest.TestCase):
     def testDateLineCountOutputRegressionTest(self):
 
         # Build paths
-        actual_datelc_path = os.path.join (self.srcdir, "datelc")
+        actual_datelc_path = os.path.join (self.srcdir, "datelc.csv")
         expected_datelc_path = os.path.join (self.srcdir, "tests/expected-datelc")
 
         # Run actual test
