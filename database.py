@@ -92,6 +92,10 @@ def StoreHacker(name, elist, email):
     HackersByID[id] = h
     return h
 
+def NormalizeEmail(email):
+    """RFC 2821 allows case sensitivity but no one actually does that?"""
+    return email.lower()
+
 def LookupEmail(addr):
     try:
         return HackersByEmail[addr]
@@ -276,7 +280,7 @@ def AddEmailAlias(variant, canonical):
     EmailAliases[variant] = canonical
 
 def RemapEmail(email):
-    email = email.lower()
+    email = NormalizeEmail(email)
     try:
         return EmailAliases[email]
     except KeyError:
@@ -300,7 +304,7 @@ nextyear = datetime.date.today() + datetime.timedelta(days = 365)
 def AddEmailEmployerMapping(email, employer, end = nextyear):
     if end is None:
         end = nextyear
-    email = email.lower()
+    email = NormalizeEmail(email)
     empl = GetEmployer(employer)
     try:
         l = EmailToEmployer[email]
@@ -317,7 +321,7 @@ def AddEmailEmployerMapping(email, employer, end = nextyear):
 
 def MapToEmployer(email, unknown = 0):
     # Somebody sometimes does s/@/ at /; let's fix it.
-    email = email.lower().replace(' at ', '@')
+    email = NormalizeEmail(email).replace(' at ', '@')
     try:
         return EmailToEmployer[email]
     except KeyError:
