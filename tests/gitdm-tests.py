@@ -107,8 +107,9 @@ class GitdmTests(unittest.TestCase):
                                             stdout=subprocess.PIPE)
         gitdm_process = subprocess.Popen (["./gitdm"] + arguments,
                                           stdin=git_log_process.stdout)
-        gitdm_process.communicate ()
-
+        gitdm_process.communicate (timeout=10)
+        for p in [gitdm_process, git_log_process]:
+            self.assertEqual(0, p.wait(timeout=10))
 
     ##
     # Makes sure the files have the same content.
