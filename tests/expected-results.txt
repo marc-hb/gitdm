@@ -44,3 +44,9 @@ punk.rocker@example.com      1 (2.4%)
 
 Employers with the most signoffs (total 2)
 enselic@gmail.com            2 (100.0%)
+
+Employers with the most hackers (total 4)
+enselic@gmail.com            1 (25.0%)
+line.remover@bogus.bo        1 (25.0%)
+random.joe@example.com       1 (25.0%)
+punk.rocker@example.com      1 (25.0%)
