@@ -7,6 +7,9 @@ _inside_ sof.git!
 Sample usage:
 
     cd sof/
+
+    ./gitdm/per_quarter_csv.sh > _.csv
+
     git log --numstat --since 2017-01-01 | ./gitdm/gitdm -b ./gitdm/ -s -n -l 15 | less
 
 
