@@ -111,6 +111,8 @@ class GitdmTests(unittest.TestCase):
         for p in [gitdm_process, git_log_process]:
             self.assertEqual(0, p.wait(timeout=10))
 
+        git_log_process.stdout.close()
+
     ##
     # Makes sure the files have the same content.
     #
