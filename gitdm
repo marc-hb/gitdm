@@ -184,8 +184,7 @@ def AddDateLines(date, lines):
         DateMap[date] = lines
 
 def PrintDateStats():
-    dates = DateMap.keys()
-    dates.sort()
+    dates = sorted(DateMap.keys())
     total = 0
     datef = open('datelc.csv', 'w')
     datef.write('Date,Changed,Total Changed\n')
