@@ -1,0 +1,75 @@
+#!/usr/bin/python3
+#
+# Figure out who did the stable backports
+#
+# for each stable commit
+#    snarf it
+#    find upstream commit and snarf
+#    get sob lines from each
+#    count any extras in the stable one
+#
+# stable-backporters vX.Y vX.Y.Z
+#
+import sys, re, subprocess
+
+#
+# The two common forms up upstream reference.
+#
+p_upstream = re.compile(r'commit ([0-9a-f]+) upstream', re.I)
+p_upstream2 = re.compile(r'upstream commit ([0-9a-f]+)', re.I)
+#
+# Grab names out of signoffs.  We stop at "(" as well because some
+# folks put their employer name in as well.
+#
+p_sob = re.compile(r'^ +Signed-off-by: +([^<(]+) [<(]', re.M)
+
+def snarf_commit_log(commit):
+    cmd = ['git', 'log', '-1', commit ]
+    with subprocess.Popen(cmd, stdout = subprocess.PIPE) as log:
+        return log.stdout.read().decode('utf8')
+
+def find_upstream(loginfo):
+    m = p_upstream.search(loginfo) or p_upstream2.search(loginfo)
+    if m:
+        return m.group(1)
+    return None
+#
+# Snarf up all of the commit IDs.
+#
+cmd = ['git', 'log', '--no-merges', '--pretty=format:%h', f'{sys.argv[1]}..{sys.argv[2]}' ]
+with subprocess.Popen(cmd, stdout = subprocess.PIPE) as git:
+    ids = [ line.decode('utf8').strip() for line in git.stdout.readlines() ]
+
+extra_sobs = { }
+missing = 0
+
+for id in ids:
+    stable = snarf_commit_log(id)
+    #
+    # Find the reference to the upstream commit, if any.
+    #
+    ml_id = find_upstream(stable)
+    if not ml_id:
+        missing += 1
+        continue
+    #
+    # Snarf that commit, then compare SOBs
+    #
+    mainline = snarf_commit_log(ml_id)
+    ml_sobs = p_sob.findall(mainline)
+    for sob in p_sob.findall(stable):
+        if sob not in ml_sobs:
+            try:
+                extra_sobs[sob] += 1
+            except KeyError:
+                extra_sobs[sob] = 1
+
+total = sum(extra_sobs.values())
+print(f'{len(ids)} total, {total} with ref, {missing} commits missing upstream ref')
+print(f'{len(extra_sobs)} backporters total')
+bporters = sorted(extra_sobs.keys(), key = lambda s: -extra_sobs[s])
+for bp in bporters[:30]:
+    pct = (100*extra_sobs[bp])/total
+    print(f'  <tr><td>{bp}</td><td align="right">{extra_sobs[bp]:,d}</td>'
+          f'<td align="right">{pct:.2f}%</td></tr>')
+
