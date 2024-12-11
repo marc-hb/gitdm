@@ -211,22 +211,40 @@ def trim_trees(limit):
         zapped += srcs[extra]
         del srcs[extra]
     srcs['%d other trees' % (nextra)] = zapped
+
+#
+# How many trees did each commit pass through?
+#
+Hops = [ 0, 0, 0, 0, 0, 0, 0, 0 ]
+
+def hop_histogram(merge, depth = 0):
+#    print(merge.id[:10], depth)
+    Hops[depth] += len(merge.commits)
+    for sub in merge.merges:
+        hop_histogram(sub, depth + 1)
+    if depth == 0:
+        print('\nHops Commits')
+        for i in range(0, len(Hops)):
+            if Hops[i]:
+                print(f'{i}    {Hops[i]:5d}')
+        print()
+
 #
 # Take our map of the commit structure and boil it down to how many commits
 # moved from one tree to the next.
 #
 
-def dumptree(start, indent = ''):
+def dumptree(start, depth = 0):
     int = ''
     if start.internal:
         int = 'I: '
-    print('%s%s%s: %d/%d %s' % (indent, int, start.id[:10],
+    print('%s%s%s: %d/%d %s' % ('  '*depth, int, start.id[:10],
                                  len(start.merges), len(start.commits),
                                  start.tree))
     for merge in start.merges:
-        dumptree(merge, indent + '  ')
+        dumptree(merge, depth + 1)
 
-def dumpflow(tree, indent = '', seen = []):
+def dumpflow(tree, depth = 0, seen = []):
     try:
         srcs = Treecounts[tree]
     except KeyError:
@@ -237,10 +255,10 @@ def dumpflow(tree, indent = '', seen = []):
             print('Skip', src, srcs[src], seen)
         else:
             if src in SignedTrees:
-                print('%s%4d ** %s' % (indent, srcs[src], src))
+                print('%s%4d ** %s' % ('  '*depth, srcs[src], src))
             else:
-                print('%s%4d %s' % (indent, srcs[src], src))
-            dumpflow(src, indent = indent + '  ', seen = seen + [tree])
+                print('%s%4d %s' % ('  '*depth, srcs[src], src))
+            dumpflow(src, depth = depth + 1, seen = seen + [tree])
 
 def totalsignedstats(tree, signed = [ ], unsigned = [ ]):
     try:
@@ -394,6 +412,7 @@ else:
 #dumptree(Mainline)
 zorch_internals(Mainline)
 #dumptree(Mainline)
+hop_histogram(Mainline)
 Treecounts['mainline'] = { 'Applied by Linus': len(Mainline.commits) }
 print('total commits', count_commits(Mainline))
 tree_stats(Mainline)
