@@ -27,6 +27,8 @@ def SetupArgs():
                    required = False, default = '')
     p.add_argument('-l', '--last', help = 'Last version for detailed tracking',
                    required = False, default = '')
+    p.add_argument('-H', '--hackers', help = 'List hackers to started at <version>',
+                   required = False, default = '')
     p.add_argument('-m', '--minversions', required = False, default = 1, type = int,
                    help = 'How many versions an author contributes to for counting')
     return p.parse_args()
@@ -91,6 +93,14 @@ def PrintFirstEmpls():
             companies += FirstEmpls[e]
     print('Companies: %d' % (companies))
 
+def PrintFirstHackers(version):
+    print(f'\n------ first-time hackers in {version} ------------')
+    for hacker in Firsts[version]:
+        empl = hacker.employer[0][0][1]
+        try:
+            print(f'   {hacker.name} {empl.name} {hacker.email}')
+        except:
+            print(f' BUMMER: {hacker.name} {empl}')
 #
 # Basic stats
 #
@@ -132,6 +142,8 @@ def versionmap(vers):
         return 120 + int(split[1])
     if split[0] in ['v5', '5']:
         return 150 + int(split[1])
+    if split[0] in ['v6', '6']:
+        return 180 + int(split[1])
     die('Funky version %s' % (vers))
 
 T_First = 0
@@ -249,3 +261,6 @@ for v in versions:
     print('\t%d\t%d' % (len(DevsPerVersion[v]), len(EmplsPerVersion[v]) - 3))
 PrintFirstDirs()
 PrintFirstEmpls()
+
+if args.hackers:
+    PrintFirstHackers(args.hackers)
