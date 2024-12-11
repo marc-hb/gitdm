@@ -1,0 +1,118 @@
+#!/usr/bin/python3
+#
+# Figure out who did the stable backports
+#
+# for each stable commit
+#    snarf it
+#    find upstream commit and snarf
+#    get sob lines from each
+#    count any extras in the stable one
+#
+# stable-backporters vX.Y vX.Y.Z
+#
+import sys, re, subprocess
+from lwn.db import database # XXX
+
+database.SetConnectString('dbname=ksdb')
+
+#
+# The two common forms up upstream reference.
+#
+p_upstream = re.compile(r'commit ([0-9a-f]+) upstream', re.I)
+p_upstream2 = re.compile(r'upstream commit ([0-9a-f]+)', re.I)
+p_fixes = re.compile(r'^ +Fixes: +([a-f0-9]+) ', re.M)
+
+def snarf_commit_log(commit):
+    cmd = ['git', 'log', '-1', commit ]
+    with subprocess.Popen(cmd, stdout = subprocess.PIPE) as log:
+        return log.stdout.read().decode('utf8')
+
+def find_upstream(loginfo):
+    m = p_upstream.search(loginfo) or p_upstream2.search(loginfo)
+    if m:
+        return m.group(1)
+    return None
+
+commit_map = { }
+version_only = re.compile(r'(v\d\.[\d.]+)')
+
+def get_release_hard_way(commit):
+    cmd = ['git', 'describe', '--contains', '--match', 'v*', commit]
+    with subprocess.Popen(cmd, stdout = subprocess.PIPE) as log:
+        release = log.stdout.readline().decode('utf8')
+        m = version_only.search(release)
+        if not m:
+            return None
+        commit_map[commit] = m.group(1)
+    return commit_map[commit]
+
+def get_release(commit):
+    commit = commit[:12]
+    if commit not in commit_map:
+        rows = database.Query('select c_release from commits where c_id = %s',
+                              commit)
+        if rows:
+            commit_map[commit] = rows[0][0]
+        else:
+            return get_release_hard_way(commit)
+    return commit_map[commit]
+
+#
+# Process stable commits in a thread.
+#
+fixes_found = 0
+def process_commit(id):
+    global missing, fixes_found
+
+    stable = snarf_commit_log(id)
+    #
+    # Find the reference to the upstream commit, if any.
+    #
+    ml_id = find_upstream(stable)
+    if not ml_id:
+        missing += 1
+        return    
+    #
+    # Snarf that commit, then look for a fixes tag
+    #
+#    mainline = snarf_commit_log(ml_id)
+    fixes = p_fixes.search(stable)
+    if fixes:
+        fixes_found += 1
+        release = get_release(fixes.group(1))
+        if release:
+            if release in release_fixes:
+                release_fixes[release] += 1
+            else:
+                release_fixes[release] = 1
+
+def relkey(release):
+    s = release[1:].split('.')
+    key = int(s[0])*100000 + int(s[1])*1000
+    if len(s) == 3:
+        key += int(s[2])
+    return key
+
+#
+# Main program time.
+#
+release_fixes = { }
+#
+# Snarf up all of the commit IDs.
+#
+cmd = ['git', 'log', '--no-merges', '--pretty=format:%h', f'{sys.argv[1]}..{sys.argv[2]}' ]
+with subprocess.Popen(cmd, stdout = subprocess.PIPE) as git:
+    ids = [ line.decode('utf8').strip() for line in git.stdout.readlines() ]
+
+missing = 0
+count = 0
+for id in ids:
+    process_commit(id)
+    count += 1
+    if (count % 50) == 0:
+        sys.stderr.write(f'Processed {count}, found {fixes_found} tags.     \r')
+        sys.stderr.flush()
+
+rels = sorted(release_fixes.keys(), key = relkey)
+for rel in rels:
+    print(f'{rel} {release_fixes[rel]}')

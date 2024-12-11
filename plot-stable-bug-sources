@@ -1,0 +1,60 @@
+#!/usr/bin/python3
+#
+# Read the output from stable-bug-sources and plot it.
+#
+import argparse
+from matplotlib import pyplot
+
+#
+# argparsery
+#
+p = argparse.ArgumentParser()
+p.add_argument('file', help = 'The file to plot')
+p.add_argument('-f', '--first', help = 'First verson to plot', default = '')
+p.add_argument('-l', '--last', help = 'Last verson to plot', default = '')
+p.add_argument('-w', '--width', help = 'Figure width', default = 7.0, type = float)
+p.add_argument('-H', '--height', help = 'Figure height', default = 15.0,
+               type = float)
+p.add_argument('-v', '--version', help = 'Version for title', default = '?')
+p.add_argument('-s', '--save', help = 'File name for image save', default = None)
+args = p.parse_args()
+
+#
+# Snarf the input data.
+#
+version_names = [ ] # Sorted on input
+version_counts = [ ]
+
+first = args.first
+with open(args.file, 'r') as input:
+    for line in input.readlines():
+        sline = line.split()
+        #
+        # Drop stuff until we hit the first wanted.
+        #
+        if first:
+            if sline[0] != first:
+                continue
+            first = None
+        version_names.append(sline[0])
+        version_counts.append(int(sline[1]))
+        #
+        # if we've hit the last we can bail now.
+        #
+        if args.last and (sline[0] == args.last):
+            break
+#
+# Make the plot.
+#
+pyplot.figure(figsize = (args.width, args.height))
+pyplot.tight_layout()
+pyplot.ylim(-1, len(version_names))
+pyplot.tick_params(labelsize = 9)
+pyplot.title(f'Commits fixed in {args.version} by release of introduction')
+pyplot.xlabel('Fixes')
+pyplot.ylabel('Release')
+pyplot.barh(version_names, version_counts)
+if args.save:
+    pyplot.savefig(args.save, dpi = 100)
+pyplot.show()
+print(f'{sum(version_counts)} fixes total')
