@@ -510,6 +510,8 @@ for logpatch in patches:
     empl = p.author.emailemployer(p.email, p.date)
     if CompanyFilter and empl.name != CompanyFilter:
         continue
+    if not empl:
+        continue
     #
     # Now note the file accesses if need be.
     #
