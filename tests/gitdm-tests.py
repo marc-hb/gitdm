@@ -48,7 +48,7 @@ class GitdmTests(unittest.TestCase):
     def testDateLineCountOutputRegressionTest(self):
 
         # Build paths
-        actual_datelc_path = os.path.join (self.srcdir, "datelc")
+        actual_datelc_path = os.path.join (self.srcdir, "datelc.csv")
         expected_datelc_path = os.path.join (self.srcdir, "tests/expected-datelc")
 
         # Run actual test
@@ -107,8 +107,11 @@ class GitdmTests(unittest.TestCase):
                                             stdout=subprocess.PIPE)
         gitdm_process = subprocess.Popen (["./gitdm"] + arguments,
                                           stdin=git_log_process.stdout)
-        gitdm_process.communicate ()
+        gitdm_process.communicate (timeout=10)
+        for p in [gitdm_process, git_log_process]:
+            self.assertEqual(0, p.wait(timeout=10))
 
+        git_log_process.stdout.close()
 
     ##
     # Makes sure the files have the same content.
