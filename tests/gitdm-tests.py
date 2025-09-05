@@ -39,7 +39,7 @@ class GitdmTests(unittest.TestCase):
         # Run actual test
         self.runOutputFileRegressionTest (expected_results_path,
                                           actual_results_path,
-                                          ["-o", actual_results_path])
+                                          ["./gitdm.py", "-o", actual_results_path])
 
 
     ##
@@ -54,7 +54,7 @@ class GitdmTests(unittest.TestCase):
         # Run actual test
         self.runOutputFileRegressionTest (expected_datelc_path,
                                           actual_datelc_path,
-                                          ["-D"])
+                                          ["./gitdm.py", "-D"])
 
 
     ##
@@ -105,7 +105,7 @@ class GitdmTests(unittest.TestCase):
     def runGitdm(self, arguments):
         git_log_process = subprocess.Popen (["git", "--git-dir", self.git_dir, "log", "-p", "-M"],
                                             stdout=subprocess.PIPE)
-        gitdm_process = subprocess.Popen (["./gitdm.py"] + arguments,
+        gitdm_process = subprocess.Popen (arguments,
                                           stdin=git_log_process.stdout)
         gitdm_process.communicate (timeout=10)
         for p in [gitdm_process, git_log_process]:
