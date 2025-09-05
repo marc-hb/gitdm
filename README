@@ -171,6 +171,14 @@ FileTypeMap file
 	'code' (the filename instead of '\.sh$').  The first element in order
 	has precedence over the next ones.
 
+
+GITDM as a module
+
+	To avoid parsing gitdm output and get access to more data, there is
+	preliminary support to "import gitdm" from your own Python script.
+	See the "tests/test-import.py" example.
+
+
 HACKING
 	./tests/gitdm-tests.py
 

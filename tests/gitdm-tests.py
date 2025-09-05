@@ -56,6 +56,17 @@ class GitdmTests(unittest.TestCase):
                                           actual_datelc_path,
                                           ["./gitdm.py", "-D"])
 
+    ##
+    # Test "import gitdm"
+    #
+    def testImportGitdm(self):
+        actual_out = os.path.join (self.srcdir, "tests/actual-test-import.txt")
+        expected_out = os.path.join (self.srcdir, "tests/expected-test-import.txt")
+
+        self.runOutputFileRegressionTest (expected_out,
+                                          actual_out,
+                                          ["./tests/test-import.py", "-o", actual_out])
+
 
     ##
     # Run a test, passing path to file with expected output, path to
